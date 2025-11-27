@@ -1,0 +1,59 @@
+/* ----------- Contenedor del navbar global ----------- */
+#navbar-root {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* ----------- Navbar superior global ----------- */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 18px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border-subtle);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.8);
+}
+
+/* Marca izquierda */
+.top-nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.top-nav-logo {
+    font-size: 1.3rem;
+}
+
+.top-nav-title {
+    font-weight: 600;
+}
+
+/* Links derecha */
+.top-nav-links {
+    display: flex;
+    gap: 8px;
+}
+
+.top-nav-link {
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 6px 10px;
+    border-radius: 999px;
+    color: var(--text-muted);
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+}
+
+.top-nav-link:hover {
+    background: var(--surface-alt);
+    color: var(--text-main);
+    transform: translateY(-1px);
+}
+
+.top-nav-link.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
