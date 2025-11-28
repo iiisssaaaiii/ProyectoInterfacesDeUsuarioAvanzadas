@@ -373,6 +373,13 @@ cameraToggleBtn.addEventListener("click", () => {
 function procesarComandoVoz(texto) {
   console.log("Procesando comando:", texto);
 
+  // 1) Primero intentamos comandos GLOBALES (inicio, biblioteca, subir, bajar, etc.)
+  if (window.procesarComandoGlobal && window.procesarComandoGlobal(texto)) {
+    // Si fue un comando global, ya no seguimos con los comandos del lector
+    return;
+  }
+
+  // 2) Si no fue global, seguimos con los comandos propios del lector
   // ---------------- NAVAGACIÓN ----------------
   if (texto.includes("siguiente página") || texto.includes("avanzar")) {
     goToNextPage();
