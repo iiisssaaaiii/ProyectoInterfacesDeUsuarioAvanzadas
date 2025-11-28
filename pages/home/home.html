@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Biblioteca Digital</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="../../css/global.css">
+</head>
+<body data-page="Inicio">
+    <div id="navbar-root"></div>
+
+    <header class="header">
+        <div class="header-left">
+            <h1 class="page-title">Inicio</h1>
+        </div>
+
+        <div class="header-actions">
+            <button class="icon-btn" id="btnMic">🎤</button>
+            <button class="icon-btn">⚙️</button>
+        </div>
+    </header>
+
+    <!-- Estado del micrófono -->
+    <p id="micStatus" class="mic-status">Micrófono desactivado</p>
+
+    <!-- Contenido principal -->
+    <main class="container">
+
+        <!-- Buscador -->
+        <section class="search-section">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar documento, tema o autor...">
+                <button class="search-btn" aria-label="Buscar">
+                    🔍
+                </button>
+            </div>
+        </section>
+
+        <!-- Sección de recientes -->
+        <section class="section">
+            <h2 class="section-title">Seguir leyendo</h2>
+            <p class="section-subtitle">Continúa justo donde te quedaste.</p>
+
+            <div class="recent-list">
+                <div class="doc-card">
+                    <div class="thumb"></div>
+                    <p class="doc-title">Apuntes de BD</p>
+                    <p class="doc-meta">Página 32 · 5 min restantes</p>
+                </div>
+
+                <div class="doc-card">
+                    <div class="thumb"></div>
+                    <p class="doc-title">Programación Java</p>
+                    <p class="doc-meta">Página 10 · Hoy</p>
+                </div>
+
+                <div class="doc-card">
+                    <div class="thumb"></div>
+                    <p class="doc-title">Proyecto Docker</p>
+                    <p class="doc-meta">Página 5 · Ayer</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Botón agregar -->
+        <section class="add-section">
+            <button class="add-btn">+ Agregar Documento</button>
+        </section>
+
+        <!-- Categorías -->
+        <section class="section">
+            <h2 class="section-title">Categorías</h2>
+
+            <div class="category-list">
+                <div class="category-card">Apuntes</div>
+                <div class="category-card">Libros</div>
+                <div class="category-card">PDFs Tareas</div>
+                <div class="category-card">Favoritos</div>
+            </div>
+        </section>
+
+        <!-- Tips de comandos por voz y gestos -->
+        <section class="section tips-section">
+            <h2 class="section-title">Tips de comandos</h2>
+            <p class="section-subtitle">
+                Prueba estos comandos por voz o gestos cuando estés en el lector de PDF.
+            </p>
+
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h3 class="tip-title">Comandos de voz</h3>
+                    <ul class="tip-list">
+                        <li>"Ir a la página 15"</li>
+                        <li>"Buscar 'índices B-tree'"</li>
+                        <li>"Leer desde el inicio del párrafo"</li>
+                        <li>"Cambiar a modo oscuro"</li>
+                        <li>"Zoom 120%"</li>
+                    </ul>
+                </div>
+
+                <div class="tip-card">
+                    <h3 class="tip-title">Gestos</h3>
+                    <ul class="tip-list">
+                        <li>Swipe izquierda → página siguiente</li>
+                        <li>Swipe derecha → página anterior</li>
+                        <li>Pinch → zoom</li>
+                        <li>Mano abierta → pausar lectura</li>
+                        <li>Mano cerrada → reanudar lectura</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../../navbar.js"></script>
+    <script src="home.js"></script>
+
+</body>
+</html>
