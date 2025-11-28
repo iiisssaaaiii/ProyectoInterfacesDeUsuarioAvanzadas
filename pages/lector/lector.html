@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Visualizador de PDF</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="lector.css" />
+</head>
+<body class="pdf-viewer-body">
+  <!-- Barra superior -->
+  <header class="top-bar">
+    <div class="top-bar-left">
+      <button class="icon-button" id="btn-back">
+        ←
+      </button>
+      <div class="doc-info">
+        <h1 class="doc-title">Introducción a Interfaces Gestuales.pdf</h1>
+        <p class="doc-subtitle">Página 12 de 230</p>
+      </div>
+    </div>
+
+    <div class="top-bar-right">
+      <button class="mode-toggle" id="btn-mode-toggle">
+        Modo lectura
+      </button>
+
+      <div class="options-menu-wrapper">
+        <button class="icon-button" id="btn-options">
+          ⋮
+        </button>
+        <div class="options-menu" id="options-menu">
+          <button class="options-item">Descargar</button>
+          <button class="options-item">Ver índice</button>
+          <button class="options-item">Buscar texto</button>
+          <button class="options-item">Ajustes de lectura</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+    <!-- Barra de iconos rápidos -->
+  <div class="quick-actions">
+    <button class="quick-action">
+      <img
+        src="../../assets/icons/btn-descargar.png"
+        alt="Descargar"
+        class="quick-action-icon"
+      />
+      <span>Descargar</span>
+    </button>
+
+    <button class="quick-action">
+      <img
+        src="../../assets/icons/btn-indice.png"
+        alt="Ver índice"
+        class="quick-action-icon"
+      />
+      <span>Índice</span>
+    </button>
+
+    <button class="quick-action">
+      <img
+        src="../../assets/icons/btn-buscarTexto.png"
+        alt="Buscar texto"
+        class="quick-action-icon"
+      />
+      <span>Buscar</span>
+    </button>
+
+    <button class="quick-action">
+      <img
+        src="../../assets/icons/btn-ajustesLectura.png"
+        alt="Ajustes de lectura"
+        class="quick-action-icon"
+      />
+      <span>Ajustes</span>
+    </button>
+  </div>
+
+  <main class="viewer-layout">
+
+
+  <!-- Layout principal -->
+  <main class="viewer-layout">
+    <!-- Área central del PDF -->
+    <section class="viewer-center">
+      <div class="pdf-area" id="pdf-area">
+        <div class="pdf-page">
+          <div class="pdf-page-header">
+            <span>Página 12</span>
+          </div>
+
+          <!-- Simulación de contenido del PDF -->
+          <div class="pdf-page-content">
+            <div class="line large"></div>
+            <div class="line medium"></div>
+            <div class="line medium"></div>
+            <div class="line short"></div>
+            <div class="line large"></div>
+            <div class="line medium"></div>
+            <div class="line short"></div>
+            <div class="line large"></div>
+            <div class="line large"></div>
+          </div>
+        </div>
+
+        <!-- Barra flotante de controles (aparece al mover el mouse / hover) -->
+        <div class="floating-toolbar">
+          <button class="floating-btn" title="Zoom -">−</button>
+          <button class="floating-btn" title="Zoom +">+</button>
+
+          <div class="divider"></div>
+
+          <button class="floating-btn" title="Miniaturas de páginas">
+            ⧉
+          </button>
+
+          <div class="divider"></div>
+
+          <button class="floating-btn" title="Lectura en voz alta">
+            ▶
+          </button>
+          <button class="floating-btn" title="Pausar lectura">
+            ⏸
+          </button>
+
+          <div class="divider"></div>
+
+          <button class="floating-btn" title="Marcar favorito">
+            ★
+          </button>
+          <button class="floating-btn" title="Resaltar texto">
+            🖍
+          </button>
+        </div>
+
+        <!-- Miniaturas (ejemplo visual; podrías cargar imágenes reales: img/descarga1.jpg, etc.) -->
+        <div class="thumbnails-panel">
+          <div class="thumb-item active">
+            <div class="thumb-page">12</div>
+          </div>
+          <div class="thumb-item">
+            <div class="thumb-page">13</div>
+          </div>
+          <div class="thumb-item">
+            <div class="thumb-page">14</div>
+          </div>
+          <div class="thumb-item">
+            <div class="thumb-page">15</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Panel lateral: Controles por gestos / voz -->
+    <aside class="assist-panel">
+      <div class="assist-card">
+        <h2>Controles por gestos</h2>
+        <ul>
+          <li><strong>Swipe derecha</strong> → página anterior</li>
+          <li><strong>Swipe izquierda</strong> → página siguiente</li>
+          <li><strong>Pinch</strong> → zoom</li>
+          <li><strong>Mano abierta</strong> → pausar lectura</li>
+          <li><strong>Mano cerrada</strong> → reanudar lectura</li>
+        </ul>
+      </div>
+
+      <div class="assist-card">
+        <h2>Controles por voz</h2>
+        <ul>
+          <li>“<strong>Ir a la página 25</strong>”</li>
+          <li>“<strong>Buscar palabra interfaces</strong>”</li>
+          <li>“<strong>Leer desde el principio del párrafo</strong>”</li>
+          <li>“<strong>Cambiar a modo oscuro</strong>”</li>
+          <li>“<strong>Zoom 120%</strong>”</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
+
+  <script src="lector.js"></script>
+</body>
+</html>

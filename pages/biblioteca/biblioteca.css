@@ -1,0 +1,496 @@
+/* ------- Fuente moderna ------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+/* ------- Variables de color (tu paleta) ------- */
+:root {
+    --bg-main: #121212;          /* Fondo Principal */
+    --bg-surface: #1E1E1E;       /* Superficies (cards, header) */
+    --accent-primary: #BB86FC;   /* Acento Primario */
+    --accent-secondary: #03DAC6; /* Acento Secundario */
+    --text-main: #E1E1E1;        /* Texto Principal */
+    --text-muted: #A0A0A0;       /* Texto Secundario */
+    --border-subtle: #2A2A2A;
+}
+
+/* ------- Reset / Global ------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    background: radial-gradient(circle at top, #1d1d1d 0, var(--bg-main) 55%);
+    color: var(--text-main);
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Espacio entre navbar y contenido */
+body[data-page="Biblioteca"] #navbar-root {
+    margin-bottom: 24px;
+}
+
+/* ------- Topbar ------- */
+.topbar {
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 18px;
+    border: 1px solid var(--border-subtle);
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(12px);
+    margin-bottom: 20px;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #121212;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 18px;
+}
+
+.titles h1 {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* ------- Acciones (search + btn) ------- */
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search {
+    padding: 9px 14px;
+    width: 240px;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: #161616;
+    color: var(--text-main);
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.search::placeholder {
+    color: #666;
+}
+
+.search:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px rgba(187, 134, 252, 0.6);
+    background: #181818;
+}
+
+.add-btn {
+    background: var(--accent-primary);
+    color: #121212;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
+    box-shadow: 0 6px 18px rgba(187, 134, 252, 0.35);
+}
+
+.add-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 9px 24px rgba(187, 134, 252, 0.45);
+}
+
+.add-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* ------- Contenido general ------- */
+.content {
+    margin-top: 14px;
+}
+
+/* ------- Filtros tipo "chips" ------- */
+.filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.pill {
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: #181818;
+    color: var(--text-muted);
+    font-size: 12px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.pill.active {
+    background: rgba(187, 134, 252, 0.12);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.pill:hover {
+    border-color: var(--accent-secondary);
+}
+
+/* ------- Grid de tarjetas ------- */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+/* ------- Tarjeta de libro/PDF ------- */
+.card {
+    background: var(--bg-surface);
+    border-radius: 16px;
+    padding: 12px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    transition: 0.25s;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-4px) translateZ(0);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+    border-color: rgba(187, 134, 252, 0.4);
+}
+
+/* Portada */
+.thumb {
+    width: 100%;
+    height: 210px;
+    background: radial-gradient(circle at top left, rgba(187, 134, 252, 0.9), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(3, 218, 198, 0.8), transparent 55%),
+                #191919;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Faja inferior decorativa */
+.thumb::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 32px;
+    background: linear-gradient(90deg,
+        rgba(18, 18, 18, 0.9),
+        rgba(187, 134, 252, 0.4),
+        rgba(3, 218, 198, 0.3)
+    );
+    opacity: 0.7;
+}
+
+/* Botón "Ver detalles" dentro de la tarjeta */
+.detail-btn {
+    margin-top: 10px;
+    margin-bottom: 8px;
+    width: 100%;
+    border-radius: 999px;
+    border: 1px solid var(--border-subtle);
+    background: #181818;
+    color: var(--text-main);
+    font-size: 12px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+
+.detail-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: rgba(187, 134, 252, 0.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Texto de la tarjeta */
+.card h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: var(--text-main);
+    line-height: 1.35;
+}
+
+.meta {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* ------- MODAL DETALLE LIBRO ------- */
+.detalle-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 24px;
+}
+
+.detalle-modal-overlay.is-open {
+    display: flex;
+}
+
+.detalle-dialog {
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background: #111;
+    border-radius: 20px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+    overflow: hidden;
+    position: relative;
+    padding: 18px 20px;
+}
+
+/* Botón cerrar modal */
+.detalle-close {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 999px;
+    transition: 0.2s;
+}
+
+.detalle-close:hover {
+    color: var(--accent-primary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Contenido interno */
+.detail-content {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 28px;
+    margin-top: 16px;
+}
+
+/* Columna portada */
+.cover-column {
+    background: var(--bg-surface);
+    border-radius: 18px;
+    border: 1px solid var(--border-subtle);
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.cover-preview {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    border-radius: 12px;
+    background: radial-gradient(circle at top left, rgba(187,134,252,0.9), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(3,218,198,0.8), transparent 55%),
+                #191919;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-placeholder {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: rgba(0,0,0,0.45);
+    padding: 6px 10px;
+    border-radius: 999px;
+}
+
+.helper-text {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+/* Columna info */
+.info-column {
+    background: var(--bg-surface);
+    border-radius: 18px;
+    border: 1px solid var(--border-subtle);
+    padding: 18px 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.field-group {
+    margin-bottom: 18px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.field-group input[type="text"] {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    background: #161616;
+    color: var(--text-main);
+    font-size: 14px;
+}
+
+.field-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 1px rgba(187,134,252,0.6);
+}
+
+/* Etiquetas */
+.tags-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.tags-input-row input {
+    flex: 1;
+}
+
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #222;
+    color: var(--text-main);
+    font-size: 12px;
+}
+
+.tag-remove {
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.tag-remove:hover {
+    color: var(--accent-secondary);
+}
+
+/* Info básica */
+.info-row {
+    display: flex;
+    gap: 8px;
+    font-size: 13px;
+    margin-bottom: 4px;
+}
+
+.info-label {
+    color: var(--text-muted);
+}
+
+.info-value {
+    color: var(--text-main);
+}
+
+/* Acciones */
+.actions-row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ------- Responsive ------- */
+@media (max-width: 768px) {
+    body {
+        padding: 14px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .actions {
+        width: 100%;
+    }
+
+    .search {
+        width: 100%;
+    }
+
+    .detail-content {
+        grid-template-columns: 1fr;
+    }
+
+    .cover-column {
+        max-width: 360px;
+        margin: 0 auto 18px auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .thumb {
+        height: 190px;
+        background-size: cover !important;
+        background-position: center !important;
+    }
+
+    .detalle-dialog {
+        padding: 14px 12px;
+    }
+}

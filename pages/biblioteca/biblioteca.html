@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colección | Biblioteca</title>
+
+    <!-- Estilos globales primero -->
+    <link rel="stylesheet" href="../../css/global.css">
+    <!-- Estilos de esta pantalla -->
+    <link rel="stylesheet" href="biblioteca.css">
+</head>
+
+<body data-page="Biblioteca">
+    <!-- Navbar global (se rellena con navbar.js) -->
+    <div id="navbar-root"></div>
+
+    <!-- Header de la pantalla Colección -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="logo-circle">B</div>
+            <div class="titles">
+                <h1>Colección</h1>
+                <span class="subtitle">Tus PDFs y libros en un solo lugar</span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <input type="text" class="search" placeholder="Buscar en tu colección...">
+            <!-- id para el modal de “Agregar PDF” -->
+            <button class="add-btn" id="agregarPDF">+ Agregar PDF</button>
+        </div>
+    </header>
+
+    <main class="content">
+        <section class="filters">
+            <button class="pill active">Todos</button>
+            <button class="pill">Recientes</button>
+            <button class="pill">Favoritos</button>
+        </section>
+
+        <section class="grid-container">
+            <!-- El contenido se llena dinámicamente con biblioteca.js -->
+        </section>
+    </main>
+
+    <!-- =================== MODAL DETALLE LIBRO =================== -->
+    <div class="detalle-modal-overlay" id="detalleModal">
+        <div class="detalle-dialog">
+            <button class="detalle-close" id="detalleCloseBtn">×</button>
+
+            <section class="detail-content">
+                <div class="cover-column">
+                    <div class="cover-preview" id="detalleCoverPreview">
+                        <span class="cover-placeholder">Sin portada</span>
+                    </div>
+
+                    <input type="file" id="detalleCoverInput" accept="image/*" hidden>
+                    <button class="secondary-btn" id="detalleChangeCoverBtn">
+                        Cambiar portada
+                    </button>
+
+                    <p class="helper-text">
+                        Formatos: JPG, PNG. La portada solo se guarda en tu navegador (localStorage).
+                    </p>
+                </div>
+
+                <div class="info-column">
+                    <div class="field-group">
+                        <label for="detalleTitleInput">Nombre del libro</label>
+                        <input
+                            type="text"
+                            id="detalleTitleInput"
+                            placeholder="Título del libro"
+                        >
+                    </div>
+
+                    <div class="field-group">
+                        <label>Etiquetas</label>
+                        <div class="tags-input-row">
+                            <input
+                                type="text"
+                                id="detalleTagInput"
+                                placeholder="Añadir etiqueta (ej. 'PDF', 'Apuntes', 'Java')"
+                            >
+                            <button class="secondary-btn" id="detalleAddTagBtn">
+                                Añadir
+                            </button>
+                        </div>
+                        <div class="tags-container" id="detalleTagsContainer">
+                            <!-- Etiquetas dinámicas -->
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label>Información básica</label>
+                        <div class="info-row">
+                            <span class="info-label">Fecha agregado:</span>
+                            <span id="detalleFechaSpan" class="info-value">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">ID:</span>
+                            <span id="detalleIdSpan" class="info-value">—</span>
+                        </div>
+                    </div>
+
+                    <div class="actions-row">
+                        <button class="primary-btn" id="detalleSaveBtn">
+                            Guardar cambios
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- (Aquí puede ir tu modal de “Agregar PDF” si ya lo tienes) -->
+
+    <!-- JS de esta pantalla -->
+    <script src="biblioteca.js"></script>
+
+    <!-- Le decimos a navbar.js dónde está navbar.html (en la raíz del proyecto) -->
+    <script>
+      window.NAVBAR_PATH = "../../navbar.html";
+    </script>
+    <!-- Navbar global -->
+    <script src="../../navbar.js"></script>
+</body>
+</html>
