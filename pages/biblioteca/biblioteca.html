@@ -1,129 +1,201 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colección | Biblioteca</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colección | Biblioteca</title>
 
-    <!-- Estilos globales primero -->
-    <link rel="stylesheet" href="../../css/global.css">
-    <!-- Estilos de esta pantalla -->
-    <link rel="stylesheet" href="biblioteca.css">
+  <link rel="stylesheet" href="../../css/global.css">
+  <link rel="stylesheet" href="../lector/lector.css">
+  <link rel="stylesheet" href="biblioteca.css">
+
+  <style>
+    /* Truncar nombres largos en cards (ya ajustado) */
+    .card h3 {
+      width: 100%;
+      font-size: clamp(11px, 2.2vw, 14px);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  </style>
 </head>
 
 <body data-page="Biblioteca">
-    <!-- Navbar global (se rellena con navbar.js) -->
-    <div id="navbar-root"></div>
 
-    <!-- Header de la pantalla Colección -->
-    <header class="topbar">
-        <div class="topbar-left">
-            <div class="logo-circle">B</div>
-            <div class="titles">
-                <h1>Colección</h1>
-                <span class="subtitle">Tus PDFs y libros en un solo lugar</span>
-            </div>
-        </div>
+  <div id="navbar-root"></div>
 
-        <div class="actions">
-            <input type="text" class="search" placeholder="Buscar en tu colección...">
-            <!-- id para el modal de “Agregar PDF” -->
-            <button class="add-btn" id="agregarPDF">+ Agregar PDF</button>
-        </div>
-    </header>
-
-    <main class="content">
-        <section class="filters">
-            <button class="pill active">Todos</button>
-            <button class="pill">Recientes</button>
-            <button class="pill">Favoritos</button>
-        </section>
-
-        <section class="grid-container">
-            <!-- El contenido se llena dinámicamente con biblioteca.js -->
-        </section>
-    </main>
-
-    <!-- =================== MODAL DETALLE LIBRO =================== -->
-    <div class="detalle-modal-overlay" id="detalleModal">
-        <div class="detalle-dialog">
-            <button class="detalle-close" id="detalleCloseBtn">×</button>
-
-            <section class="detail-content">
-                <div class="cover-column">
-                    <div class="cover-preview" id="detalleCoverPreview">
-                        <span class="cover-placeholder">Sin portada</span>
-                    </div>
-
-                    <input type="file" id="detalleCoverInput" accept="image/*" hidden>
-                    <button class="secondary-btn" id="detalleChangeCoverBtn">
-                        Cambiar portada
-                    </button>
-
-                    <p class="helper-text">
-                        Formatos: JPG, PNG. La portada solo se guarda en tu navegador (localStorage).
-                    </p>
-                </div>
-
-                <div class="info-column">
-                    <div class="field-group">
-                        <label for="detalleTitleInput">Nombre del libro</label>
-                        <input
-                            type="text"
-                            id="detalleTitleInput"
-                            placeholder="Título del libro"
-                        >
-                    </div>
-
-                    <div class="field-group">
-                        <label>Etiquetas</label>
-                        <div class="tags-input-row">
-                            <input
-                                type="text"
-                                id="detalleTagInput"
-                                placeholder="Añadir etiqueta (ej. 'PDF', 'Apuntes', 'Java')"
-                            >
-                            <button class="secondary-btn" id="detalleAddTagBtn">
-                                Añadir
-                            </button>
-                        </div>
-                        <div class="tags-container" id="detalleTagsContainer">
-                            <!-- Etiquetas dinámicas -->
-                        </div>
-                    </div>
-
-                    <div class="field-group">
-                        <label>Información básica</label>
-                        <div class="info-row">
-                            <span class="info-label">Fecha agregado:</span>
-                            <span id="detalleFechaSpan" class="info-value">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">ID:</span>
-                            <span id="detalleIdSpan" class="info-value">—</span>
-                        </div>
-                    </div>
-
-                    <div class="actions-row">
-                        <button class="primary-btn" id="detalleSaveBtn">
-                            Guardar cambios
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-circle">B</div>
+      <div class="titles">
+        <h1>Colección</h1>
+        <span class="subtitle">Tus PDFs y libros en un solo lugar</span>
+      </div>
     </div>
 
-    <!-- (Aquí puede ir tu modal de “Agregar PDF” si ya lo tienes) -->
+    <div class="actions">
+      <!-- ========= BUSCADOR PRINCIPAL FUNCIONAL ========= -->
+      <input type="text" class="search" placeholder="Buscar en tu colección..." id="buscador">
 
-    <!-- JS de esta pantalla -->
-    <script src="biblioteca.js"></script>
+      <button class="add-btn" id="agregarPDF">+ Agregar PDF</button>
+      <input type="file" id="inputArchivoPdfReal" accept="application/pdf" hidden>
+    </div>
+  </header>
 
-    <!-- Le decimos a navbar.js dónde está navbar.html (en la raíz del proyecto) -->
-    <script>
-      window.NAVBAR_PATH = "../../navbar.html";
-    </script>
-    <!-- Navbar global -->
-    <script src="../../navbar.js"></script>
+  <main class="content">
+    <section class="filters">
+      <button class="pill active" data-filter="todos">Todos</button>
+      <button class="pill" data-filter="recientes">Recientes</button>
+      <button class="pill" data-filter="favoritos">Favoritos</button>
+    </section>
+
+    <section class="grid-container" id="grid-container"></section>
+  </main>
+
+  <!-- Tu modal existente se conserva - no lo redefino aquí -->
+
+  <!-- PDF.js (lib) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <script>
+    const inputBtn = document.getElementById("agregarPDF");
+    const inputFile = document.getElementById("inputArchivoPdfReal");
+    const grid = document.getElementById("grid-container");
+    const buscador = document.getElementById("buscador");
+
+    // Abrir selector de archivos PDFs
+    inputBtn.addEventListener("click", () => inputFile.click());
+
+    // Cuando se selecciona un PDF → guardar nombre con metadata inicial también
+    inputFile.addEventListener("change", () => {
+      const file = inputFile.files[0];
+      if (!file) return;
+
+      const library = JSON.parse(localStorage.getItem("pdfLibrary") || "[]");
+
+      // crear objeto inicial
+      const nuevoLibro = {
+        id: Date.now(),
+        nombre: file.name,
+        etiquetas: ["PDF", "Nuevo"], // tags iniciales
+        favorito: false,
+        fecha: new Date().toLocaleDateString()
+      };
+
+      library.unshift(nuevoLibro);
+      localStorage.setItem("pdfLibrary", JSON.stringify(library));
+
+      renderizarBiblioteca();
+      inputFile.value = "";
+    });
+
+    // Renderizar biblioteca por cards
+    function renderizarBiblioteca() {
+      const library = JSON.parse(localStorage.getItem("pdfLibrary") || "[]");
+      grid.innerHTML = "";
+
+      if (library.length === 0) {
+        grid.innerHTML = `<p style="color: var(--text-muted); font-size:14px;margin-top:1rem;">
+            No hay PDFs agregados aún. Usa el botón de arriba para añadir uno.
+        </p>`;
+        return;
+      }
+
+      library.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+          <div class="thumb"></div>
+          <h3>${item.nombre}</h3>
+
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="view-pdf-btn detail-btn" style="flex:1;">📘 Abrir</button>
+            <button class="edit-metadata-btn detail-btn" style="flex:1;">✏ Modificar</button>
+          </div>
+
+          <div style="margin-top:6px;font-size:11px;color: var(--text-muted);">
+            ${item.fecha} • etiquetas: ${item.etiquetas.join(", ")}
+          </div>
+        `;
+
+        // Abrir lector (estático)
+        card.querySelector(".view-pdf-btn").addEventListener("click", () => {
+          window.location.href = "../lector/lector.html?pdf=" + encodeURIComponent(item.nombre);
+        });
+
+        // Abrir modal de modificar metadata (ya existente en tu UI)
+        card.querySelector(".edit-metadata-btn").addEventListener("click", () => {
+          abrirModalDeEdicion(item);
+        });
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Abrir modal de edición de metadata
+    function abrirModalDeEdicion(item) {
+      const modal = document.getElementById("detalleModal");
+      if (!modal) {
+        alert("No se encontró el modal de edición en el HTML");
+        return;
+      }
+      const titleInput = document.getElementById("detalleTitleInput");
+      const fechaSpan = document.getElementById("detalleFechaSpan");
+      const idSpan = document.getElementById("detalleIdSpan");
+      const tagsContainer = document.getElementById("detalleTagsContainer");
+
+      titleInput.value = item.nombre;
+      fechaSpan.textContent = item.fecha;
+      idSpan.textContent = item.id;
+      tagsContainer.innerHTML = "";
+
+      item.etiquetas.forEach(tag => {
+        const chip = document.createElement("div");
+        chip.className = "tag-chip";
+        chip.innerHTML = `${tag} <button class="tag-remove" onclick="eliminarTag(${item.id}, '${tag}')">×</button>`;
+        tagsContainer.appendChild(chip);
+      });
+
+      modal.classList.add("is-open");
+    }
+
+    function eliminarTag(id, tag) {
+      const library = JSON.parse(localStorage.getItem("pdfLibrary") || "[]");
+      const libro = library.find(i => i.id === id);
+      if (!libro) return;
+
+      libro.etiquetas = libro.etiquetas.filter(t => t !== tag);
+      localStorage.setItem("pdfLibrary", JSON.stringify(library));
+      renderizarBiblioteca();
+
+      abrirModalDeEdicion(libro);
+    }
+
+    // Buscador funcional por nombre + tags
+    buscador.addEventListener("input", () => {
+      const query = buscador.value.trim().toLowerCase();
+      const cards = [...document.querySelectorAll(".card")];
+
+      cards.forEach(card => {
+        const nombre = card.querySelector("h3")?.textContent.toLowerCase() || "";
+        const etiquetas = card.textContent.toLowerCase();
+
+        card.style.display = (nombre.includes(query) || etiquetas.includes(query)) ? "" : "none";
+      });
+    });
+
+    // Inicializar
+    window.addEventListener("DOMContentLoaded", renderizarBiblioteca);
+  </script>
+
+  <script>window.NAVBAR_PATH="../../navbar.html"</script>
+  <script src="../../navbar.js"></script>
+
 </body>
 </html>

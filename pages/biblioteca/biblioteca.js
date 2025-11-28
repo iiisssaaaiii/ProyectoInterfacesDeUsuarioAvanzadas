@@ -1,4 +1,4 @@
-// ======================= COLECCIÓN (con localStorage) =======================
+// ======================= COLECCIÓN (con localStorage + backend) =======================
 
 // Libros de prueba con miniaturas (colección por defecto)
 const coleccionPorDefecto = [
@@ -34,7 +34,7 @@ const coleccionPorDefecto = [
   },
 ];
 
-// Colección que realmente se usa en la página
+// Colección real
 let coleccion = [];
 let libroActivo = null;
 let etiquetasDetalle = [];
@@ -43,7 +43,7 @@ let etiquetasDetalle = [];
 const grid = document.querySelector(".grid-container");
 const inputBusqueda = document.querySelector(".search");
 
-// Elementos del modal de detalle
+// Modal detalle
 const detalleModal = document.getElementById("detalleModal");
 const detalleTitleInput = document.getElementById("detalleTitleInput");
 const detalleFechaSpan = document.getElementById("detalleFechaSpan");
@@ -57,15 +57,15 @@ const detalleChangeCoverBtn = document.getElementById("detalleChangeCoverBtn");
 const detalleSaveBtn = document.getElementById("detalleSaveBtn");
 const detalleCloseBtn = document.getElementById("detalleCloseBtn");
 
+
 // ========= Utilidades localStorage =========
 function guardarColeccion() {
   localStorage.setItem("coleccion", JSON.stringify(coleccion));
 }
 
-function cargarColeccion() {
+function cargarColeccionLocal() {
   const raw = localStorage.getItem("coleccion");
   if (!raw) {
-    // Si no hay nada guardado, usamos la colección por defecto
     coleccion = [...coleccionPorDefecto];
     guardarColeccion();
     return;
@@ -74,49 +74,124 @@ function cargarColeccion() {
   try {
     coleccion = JSON.parse(raw);
   } catch (err) {
-    console.error("Error al parsear coleccion desde localStorage:", err);
+    console.error("Error al parsear coleccion:", err);
     coleccion = [...coleccionPorDefecto];
     guardarColeccion();
   }
 }
 
-// ========= Render de tarjetas =========
+
+
+// ======================================================================
+//   🚀 NUEVO: Cargar PDFs desde el BACKEND y fusionarlos con localStorage
+// ======================================================================
+async function cargarDesdeBackend() {
+  try {
+    const response = await fetch("http://localhost:8080/api/pdfs");
+    const data = await response.json();
+
+    console.log("📡 PDFs del backend:", data);
+
+    // Convertir al formato correcto para tu UI
+    const pdfsBackend = data.map(pdf => ({
+      id: pdf.id,            // UUID del backend
+      titulo: pdf.name,      // nombre del archivo
+      archivoURL: pdf.url,   // URL DIRECTA del backend
+      fecha: new Date().toLocaleDateString(),
+      imagen: "img/pdf-icon.png",
+      etiquetas: []
+    }));
+
+    // Mezclar backend + localStorage
+    coleccion = [...pdfsBackend, ...coleccion];
+
+    guardarColeccion();
+    mostrarColeccion(coleccion);
+
+  } catch (error) {
+    console.error("❌ Error cargando PDFs del backend:", error);
+  }
+}
+
+
+
+// ======================================================================
+//   🚀 Render de tarjetas (PDFs locales + backend)
+// ======================================================================
 function mostrarColeccion(lista) {
-  grid.innerHTML = ""; // limpiar antes de renderizar
+  grid.innerHTML = "";
 
   lista.forEach((pdf) => {
+    console.log("📄 archivoURL:", pdf.archivoURL);
+
     const card = document.createElement("div");
     card.classList.add("card");
 
     const portada = pdf.portada || pdf.imagen;
 
     card.innerHTML = `
-        <div class="thumb" style="background-image: url('${portada}'); background-size: cover; background-position: center;"></div>
+        <div class="thumb"
+             style="background-image: url('${portada}');
+                    background-size: cover;
+                    background-position: center;">
+        </div>
+
+        <button class="view-pdf-btn">Ver PDF</button>
         <button class="detail-btn">Ver detalles</button>
+
         <h3>${pdf.titulo}</h3>
         <span class="meta">Agregado: ${pdf.fecha}</span>
     `;
 
-    const detailBtn = card.querySelector(".detail-btn");
-    detailBtn.addEventListener("click", (e) => {
+    // --- Botón Ver PDF ---
+    card.querySelector(".view-pdf-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+
+      if (pdf.archivoURL) {
+        verPdf(pdf.archivoURL, pdf.titulo);
+      } else {
+        alert("Este PDF no tiene archivo asociado.");
+      }
+    });
+
+    // --- Botón Ver detalles ---
+    card.querySelector(".detail-btn").addEventListener("click", (e) => {
       e.stopPropagation();
       abrirDetalleLibro(pdf);
+    });
+
+    // --- Doble click → ver PDF ---
+    card.addEventListener("dblclick", () => {
+      if (pdf.archivoURL) {
+        verPdf(pdf.archivoURL, pdf.titulo);
+      }
     });
 
     grid.appendChild(card);
   });
 }
 
-// ========= Modal Detalle: helpers =========
-function renderDetallePortada() {
-  if (!detalleCoverPreview) return;
-  const placeholder = detalleCoverPreview.querySelector(".cover-placeholder");
 
+
+// ======================================================================
+//   🚀 Enviar PDF al lector
+// ======================================================================
+function verPdf(file, title) {
+  window.location.href =
+    `../lector/lector.html?file=${encodeURIComponent(file)}&title=${encodeURIComponent(title)}`;
+}
+
+
+
+// ======================================================================
+//   Modal Detalle
+// ======================================================================
+function renderDetallePortada() {
+  const placeholder = detalleCoverPreview.querySelector(".cover-placeholder");
   const portada = libroActivo && (libroActivo.portada || libroActivo.imagen);
+
   if (portada) {
     detalleCoverPreview.style.backgroundImage = `url('${portada}')`;
-    detalleCoverPreview.style.backgroundSize = "cover";
-    detalleCoverPreview.style.backgroundPosition = "center";
     if (placeholder) placeholder.style.display = "none";
   } else {
     detalleCoverPreview.style.backgroundImage = "";
@@ -125,7 +200,6 @@ function renderDetallePortada() {
 }
 
 function renderDetalleEtiquetas() {
-  if (!detalleTagsContainer) return;
   detalleTagsContainer.innerHTML = "";
 
   etiquetasDetalle.forEach((tag, index) => {
@@ -138,25 +212,21 @@ function renderDetalleEtiquetas() {
     detalleTagsContainer.appendChild(chip);
   });
 
-  const removeButtons = detalleTagsContainer.querySelectorAll(".tag-remove");
-  removeButtons.forEach((btn) => {
+  detalleTagsContainer.querySelectorAll(".tag-remove").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const idx = Number(btn.dataset.index);
-      etiquetasDetalle.splice(idx, 1);
+      etiquetasDetalle.splice(btn.dataset.index, 1);
       renderDetalleEtiquetas();
     });
   });
 }
 
 function abrirDetalleLibro(pdf) {
-  if (!detalleModal) return;
-
   libroActivo = pdf;
-  etiquetasDetalle = Array.isArray(pdf.etiquetas) ? [...pdf.etiquetas] : [];
+  etiquetasDetalle = pdf.etiquetas ? [...pdf.etiquetas] : [];
 
-  if (detalleTitleInput) detalleTitleInput.value = pdf.titulo || "";
-  if (detalleFechaSpan) detalleFechaSpan.textContent = pdf.fecha || "—";
-  if (detalleIdSpan) detalleIdSpan.textContent = pdf.id || "—";
+  detalleTitleInput.value = pdf.titulo;
+  detalleFechaSpan.textContent = pdf.fecha;
+  detalleIdSpan.textContent = pdf.id;
 
   renderDetallePortada();
   renderDetalleEtiquetas();
@@ -165,232 +235,91 @@ function abrirDetalleLibro(pdf) {
 }
 
 function cerrarDetalleModal() {
-  if (!detalleModal) return;
   detalleModal.classList.remove("is-open");
   libroActivo = null;
   etiquetasDetalle = [];
 }
 
-// ========= Eventos del modal detalle =========
-if (detalleChangeCoverBtn && detalleCoverInput) {
-  detalleChangeCoverBtn.addEventListener("click", () => {
-    detalleCoverInput.click();
-  });
+detalleCloseBtn.addEventListener("click", cerrarDetalleModal);
 
-  detalleCoverInput.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (!file || !libroActivo) return;
 
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      libroActivo.portada = ev.target.result;
-      renderDetallePortada();
-      guardarColeccion();
-      mostrarColeccion(coleccion);
-    };
-    reader.readAsDataURL(file);
-  });
-}
+// ======================================================================
+// Guardar cambios desde el modal
+// ======================================================================
+detalleSaveBtn.addEventListener("click", () => {
+  if (!libroActivo) return;
 
-function agregarEtiquetaDetalle() {
-  if (!detalleTagInput) return;
-  const valor = detalleTagInput.value.trim();
-  if (!valor) return;
+  libroActivo.titulo = detalleTitleInput.value;
+  libroActivo.etiquetas = etiquetasDetalle;
 
-  etiquetasDetalle.push(valor);
-  detalleTagInput.value = "";
-  renderDetalleEtiquetas();
-}
+  const i = coleccion.findIndex((x) => x.id === libroActivo.id);
+  if (i !== -1) coleccion[i] = libroActivo;
 
-if (detalleAddTagBtn && detalleTagInput) {
-  detalleAddTagBtn.addEventListener("click", agregarEtiquetaDetalle);
-  detalleTagInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      agregarEtiquetaDetalle();
-    }
-  });
-}
-
-if (detalleSaveBtn) {
-  detalleSaveBtn.addEventListener("click", () => {
-    if (!libroActivo || !detalleTitleInput) return;
-
-    const nuevoTitulo = detalleTitleInput.value.trim();
-    if (!nuevoTitulo) {
-      alert("El nombre del libro no puede estar vacío.");
-      return;
-    }
-
-    libroActivo.titulo = nuevoTitulo;
-    libroActivo.etiquetas = etiquetasDetalle;
-
-    const idx = coleccion.findIndex(
-      (item) => String(item.id) === String(libroActivo.id)
-    );
-    if (idx !== -1) {
-      coleccion[idx] = libroActivo;
-      guardarColeccion();
-      mostrarColeccion(coleccion);
-    }
-
-    cerrarDetalleModal();
-  });
-}
-
-if (detalleCloseBtn && detalleModal) {
-  detalleCloseBtn.addEventListener("click", cerrarDetalleModal);
-
-  detalleModal.addEventListener("click", (e) => {
-    if (e.target === detalleModal) {
-      cerrarDetalleModal();
-    }
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && detalleModal.classList.contains("is-open")) {
-      cerrarDetalleModal();
-    }
-  });
-}
-
-// ========= Buscar =========
-if (inputBusqueda) {
-  inputBusqueda.addEventListener("input", () => {
-    const texto = inputBusqueda.value.toLowerCase();
-
-    const filtrados = coleccion.filter((pdf) =>
-      pdf.titulo.toLowerCase().includes(texto)
-    );
-
-    mostrarColeccion(filtrados);
-  });
-}
-
-// ======================= MODAL AGREGAR LIBRO (si existe en el HTML) =======================
-// (si aún no tienes el HTML de este modal, este bloque no rompe nada)
-document.addEventListener("DOMContentLoaded", function () {
-  const btnAgregarPDF = document.getElementById("agregarPDF");
-  const modalOverlay = document.getElementById("modalAgregarLibro");
-  const btnCerrar = document.getElementById("modalAgregarLibroClose");
-  const btnCancelar = document.getElementById("btnModalCancelar");
-
-  const inputArchivoPdf = document.getElementById("inputArchivoPdf");
-  const btnSubirArchivo = document.getElementById("btnSubirArchivo");
-
-  const nombreArchivoSpan = document.getElementById("infoNombreArchivo");
-  const tamanioArchivoSpan = document.getElementById("infoTamanioArchivo");
-  const formatoArchivoSpan = document.getElementById("infoFormatoArchivo");
-
-  const coverPreview = document.getElementById("previewCover");
-  let currentPreviewUrl = null;
-
-  function abrirModal() {
-    if (modalOverlay) {
-      modalOverlay.classList.add("is-open");
-    }
-  }
-
-  function cerrarModal() {
-    if (modalOverlay) {
-      modalOverlay.classList.remove("is-open");
-    }
-  }
-
-  if (btnAgregarPDF) {
-    btnAgregarPDF.addEventListener("click", abrirModal);
-  }
-
-  if (btnCerrar) {
-    btnCerrar.addEventListener("click", cerrarModal);
-  }
-
-  if (btnCancelar) {
-    btnCancelar.addEventListener("click", cerrarModal);
-  }
-
-  // Cerrar clicando fuera del cuadro
-  if (modalOverlay) {
-    modalOverlay.addEventListener("click", function (e) {
-      if (e.target === modalOverlay) {
-        cerrarModal();
-      }
-    });
-  }
-
-  // Cerrar con ESC
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") {
-      cerrarModal();
-    }
-  });
-
-  // Abrir selector de archivo desde el botón "Subir"
-  if (btnSubirArchivo && inputArchivoPdf) {
-    btnSubirArchivo.addEventListener("click", function () {
-      inputArchivoPdf.click();
-    });
-
-    // Actualizar información y vista previa al elegir archivo
-    inputArchivoPdf.addEventListener("change", function (e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      // --- Información de texto ---
-      if (nombreArchivoSpan) nombreArchivoSpan.textContent = file.name;
-      if (tamanioArchivoSpan) {
-        const sizeKb = Math.round(file.size / 1024);
-        tamanioArchivoSpan.textContent = sizeKb + " kbs";
-      }
-      if (formatoArchivoSpan) {
-        const parts = file.name.split(".");
-        const ext = parts.length > 1 ? parts.pop().toLowerCase() : "pdf";
-        formatoArchivoSpan.textContent = ext;
-      }
-
-      // --- Limpiar preview anterior ---
-      if (coverPreview) {
-        coverPreview.style.backgroundImage = "";
-        coverPreview.innerHTML = "";
-      }
-      if (currentPreviewUrl) {
-        URL.revokeObjectURL(currentPreviewUrl);
-        currentPreviewUrl = null;
-      }
-
-      // --- Si es imagen, usarla como fondo ---
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = function (ev) {
-          if (coverPreview) {
-            coverPreview.style.backgroundImage = `url('${ev.target.result}')`;
-            coverPreview.style.backgroundSize = "cover";
-            coverPreview.style.backgroundPosition = "center";
-          }
-        };
-        reader.readAsDataURL(file);
-
-        // --- Si es PDF, embeberlo dentro del recuadro ---
-      } else if (file.type === "application/pdf") {
-        const url = URL.createObjectURL(file);
-        currentPreviewUrl = url;
-
-        if (coverPreview) {
-          const embed = document.createElement("embed");
-          embed.src = url;
-          embed.type = "application/pdf";
-          embed.style.width = "100%";
-          embed.style.height = "100%";
-          embed.style.borderRadius = "inherit";
-          embed.style.display = "block";
-
-          coverPreview.appendChild(embed);
-        }
-      }
-    });
-  }
+  guardarColeccion();
+  mostrarColeccion(coleccion);
+  cerrarDetalleModal();
 });
 
-// ======================= INICIALIZAR =======================
-cargarColeccion();
-mostrarColeccion(coleccion);
+
+
+// ======================================================================
+//  Búsqueda
+// ======================================================================
+inputBusqueda.addEventListener("input", () => {
+  const texto = inputBusqueda.value.toLowerCase();
+  mostrarColeccion(
+    coleccion.filter((pdf) => pdf.titulo.toLowerCase().includes(texto))
+  );
+});
+
+
+
+// ======================================================================
+//  🚀 Subir PDF local (blob)
+// ======================================================================
+const botonAgregar = document.getElementById("agregarPDF");
+const inputArchivoReal = document.getElementById("inputArchivoPdfReal");
+
+botonAgregar.addEventListener("click", () => {
+  inputArchivoReal.click();
+});
+
+inputArchivoReal.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (file.type !== "application/pdf") {
+    alert("Solo se permiten archivos PDF.");
+    return;
+  }
+
+  const blobUrl = URL.createObjectURL(file);
+
+  const nuevo = {
+    id: Date.now(),
+    titulo: file.name,
+    fecha: new Date().toLocaleDateString(),
+    imagen: "img/pdf-icon.png",
+    archivoURL: blobUrl,
+    etiquetas: [],
+  };
+
+  coleccion.push(nuevo);
+  guardarColeccion();
+  mostrarColeccion(coleccion);
+
+  alert("PDF agregado ❤️");
+});
+
+
+
+// ======================================================================
+//  🚀 INICIO DEL PROGRAMA
+// ======================================================================
+async function iniciar() {
+  cargarColeccionLocal();     // PDFs guardados en localStorage
+  await cargarDesdeBackend(); // PDFs del backend
+  mostrarColeccion(coleccion);
+}
+
+iniciar();
