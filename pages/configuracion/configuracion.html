@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Configuración</title>
+
+    <link rel="stylesheet" href="../../css/global.css">
+    <link rel="stylesheet" href="configuracion.css">
+</head>
+<body data-page="configuracion">
+
+    <!-- NAVBAR GLOBAL -->
+    <div id="navbar-root"></div>
+
+    <div class="config-container">
+        <h2>Configuración del sistema</h2>
+
+        <!-- ======== Preferencias de Lectura ======== -->
+        <div class="config-card">
+            <h3>Preferencias de lectura</h3>
+
+            <div class="config-row">
+                <span>Tema oscuro</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-tema">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="config-row">
+                <span>Modo pantalla completa automático</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-fullscreen">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- ======== Preferencias de Biblioteca ======== -->
+        <div class="config-card">
+            <h3>Biblioteca</h3>
+
+            <div class="config-row">
+                <span>Mostrar fechas de carga</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-fechas">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="config-row">
+                <span>Mostrar vista compacta</span>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-compacta">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <!-- botón guardar -->
+        <button class="btn-guardar" id="btn-guardar-config">Guardar cambios</button>
+    </div>
+
+    <script src="configuracion.js"></script>
+    <script>window.NAVBAR_PATH="../navbar.html";</script>
+    <script src="../../navbar.js"></script>
+    <script src="../../js/voz-global.js"></script>
+</body>
+</html>

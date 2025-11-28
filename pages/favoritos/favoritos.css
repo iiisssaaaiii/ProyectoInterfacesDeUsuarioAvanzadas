@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+/* Mantener la misma paleta del proyecto */
+:root {
+    --bg-main: #121212;
+    --bg-surface: #1E1E1E;
+    --accent-primary: #BB86FC;
+    --accent-secondary: #03DAC6;
+    --text-main: #E1E1E1;
+    --text-muted: #A0A0A0;
+    --border-subtle: #2A2A2A;
+}
+
+/* Fondo igual que biblioteca */
+body {
+    background: radial-gradient(circle at top, #1d1d1d 0, var(--bg-main) 55%);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+}
+
+.body {
+    padding: 25px;
+}
+
+.titulo-fav {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+/* GRID igual al del proyecto */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 18px;
+}
+
+/* CARD = estilo nativo del proyecto */
+.fav-card {
+    background: var(--bg-surface);
+    border-radius: 16px;
+    padding: 12px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    transition: 0.25s;
+}
+
+.fav-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(187, 134, 252, 0.4);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.7);
+}
+
+/* Imagen estilo “thumb" del proyecto */
+.fav-thumb {
+    width: 100%;
+    height: 210px;
+    background: radial-gradient(circle at top left, rgba(187,134,252,0.9), transparent 55%),
+                radial-gradient(circle at bottom right, rgba(3,218,198,0.8), transparent 55%),
+                #191919;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Título */
+.fav-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+/* Botón quitar favorito - adaptado a tu estilo */
+.btn-remove {
+    width: 100%;
+    background: rgba(187, 134, 252, 0.12);
+    border: 1px solid var(--accent-primary);
+    border-radius: 999px;
+    color: var(--accent-primary);
+    padding: 8px 0;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-remove:hover {
+    background: rgba(187,134,252,0.22);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.mensaje-vacio {
+    margin-top: 30px;
+    color: var(--text-muted);
+    font-size: 14px;
+    display: none;
+    text-align: center;
+}

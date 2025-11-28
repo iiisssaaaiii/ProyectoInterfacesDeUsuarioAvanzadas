@@ -1,3 +1,130 @@
+// =======================================================
+//   🎤 COMANDOS DE VOZ ESPECÍFICOS — BIBLIOTECA
+// =======================================================
+
+window.procesarComandoBiblioteca = function (texto) {
+    if (!texto) return false;
+    texto = texto.toLowerCase().trim();
+
+    const buscador = document.getElementById("buscadorBiblioteca");
+    const tarjetas = document.querySelectorAll(".pdf-card, .doc-card, .book-card, .item");
+    // Ajustar según tu HTML real: doc-card o lo que uses.
+
+    const addBtn = document.querySelector(".add-btn");
+
+    // =======================================================
+    // 🔍 BUSQUEDA
+    // =======================================================
+    if (texto.startsWith("buscar ")) {
+        const termino = texto.replace("buscar ", "").trim();
+
+        if (buscador) {
+            buscador.value = termino;
+            buscador.dispatchEvent(new Event("input"));
+            mostrarFeedback?.(`🔎 Buscando: "${termino}"`);
+        }
+        return true;
+    }
+
+    if (texto.includes("limpiar búsqueda") || texto.includes("quitar búsqueda")) {
+        if (buscador) buscador.value = "";
+        buscador.dispatchEvent(new Event("input"));
+        mostrarFeedback?.("❌ Búsqueda limpiada");
+        return true;
+    }
+
+    // =======================================================
+    // 📄 ABRIR DOCUMENTOS POR POSICIÓN
+    // =======================================================
+    if (texto.includes("primer documento")) {
+        if (tarjetas[0]) tarjetas[0].click();
+        return true;
+    }
+
+    if (texto.includes("segundo documento")) {
+        if (tarjetas[1]) tarjetas[1].click();
+        return true;
+    }
+
+    if (texto.includes("tercer documento")) {
+        if (tarjetas[2]) tarjetas[2].click();
+        return true;
+    }
+
+    if (texto.includes("cuarto documento")) {
+        if (tarjetas[3]) tarjetas[3].click();
+        return true;
+    }
+
+    if (texto.includes("último documento") || texto.includes("ultimo documento")) {
+        if (tarjetas.length > 0) tarjetas[tarjetas.length - 1].click();
+        return true;
+    }
+
+    // =======================================================
+    // 📄 ABRIR DOCUMENTO POR NÚMERO
+    // "Abrir documento número 7"
+    // =======================================================
+    const numeroMatch = texto.match(/documento número (\d+)/);
+    if (numeroMatch) {
+        const index = parseInt(numeroMatch[1], 10) - 1;
+        if (tarjetas[index]) tarjetas[index].click();
+        return true;
+    }
+
+    // =======================================================
+    // 🧠 ABRIR DOCUMENTO POR NOMBRE (muy PRO)
+    // =======================================================
+    if (texto.startsWith("abrir documento ")) {
+        const nombre = texto.replace("abrir documento ", "").trim();
+
+        for (let card of tarjetas) {
+            const titulo = card.textContent.toLowerCase();
+            if (titulo.includes(nombre)) {
+                card.click();
+                return true;
+            }
+        }
+
+        mostrarFeedback?.("❌ No encontré un documento con ese nombre");
+        return true;
+    }
+
+    // =======================================================
+    // ➕ AGREGAR DOCUMENTO
+    // =======================================================
+    if (texto.includes("agregar documento")) {
+        if (addBtn) addBtn.click();
+        return true;
+    }
+
+    // =======================================================
+    // 🧭 SCROLL INTERNO
+    // =======================================================
+    if (texto.includes("bajar documentos")) {
+        window.scrollBy({ top: 500, behavior: "smooth" });
+        return true;
+    }
+
+    if (texto.includes("subir documentos")) {
+        window.scrollBy({ top: -500, behavior: "smooth" });
+        return true;
+    }
+
+    if (texto.includes("inicio de la biblioteca")) {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return true;
+    }
+
+    if (texto.includes("final de la biblioteca")) {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+        return true;
+    }
+
+    // No coincidió ningún comando propio
+    return false;
+};
+
 // ======================= COLECCIÓN (con localStorage + backend) =======================
 
 // Libros de prueba con miniaturas (colección por defecto)
