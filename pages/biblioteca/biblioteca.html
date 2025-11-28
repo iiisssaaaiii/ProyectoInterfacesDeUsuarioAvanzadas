@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="biblioteca.css">
 
   <style>
-    /* Truncar nombres largos en cards (ya ajustado) */
     .card h3 {
       width: 100%;
       font-size: clamp(11px, 2.2vw, 14px);
@@ -26,9 +25,8 @@
 </head>
 
 <body data-page="Biblioteca">
-
+  
   <div id="navbar-root"></div>
-
   <header class="topbar">
     <div class="topbar-left">
       <div class="logo-circle">B</div>
@@ -46,17 +44,19 @@
       <input type="file" id="inputArchivoPdfReal" accept="application/pdf" hidden>
     </div>
   </header>
+  
+  <div class="body">
 
-  <main class="content">
-    <section class="filters">
-      <button class="pill active" data-filter="todos">Todos</button>
-      <button class="pill" data-filter="recientes">Recientes</button>
-      <button class="pill" data-filter="favoritos">Favoritos</button>
-    </section>
+    <main class="content">
+      <section class="filters">
+        <button class="pill active" data-filter="todos">Todos</button>
+        <button class="pill" data-filter="recientes">Recientes</button>
+        <button class="pill" data-filter="favoritos">Favoritos</button>
+      </section>
 
-    <section class="grid-container" id="grid-container"></section>
-  </main>
-
+      <section class="grid-container" id="grid-container"></section>
+    </main>
+  </div>
   <!-- Tu modal existente se conserva - no lo redefino aquí -->
 
   <!-- PDF.js (lib) -->
@@ -194,8 +194,9 @@
     window.addEventListener("DOMContentLoaded", renderizarBiblioteca);
   </script>
 
-  <script>window.NAVBAR_PATH="../../navbar.html"</script>
+  <script>window.NAVBAR_PATH="../navbar.html"</script>
   <script src="../../navbar.js"></script>
+  <script src="../../js/voz-global.js"></script>
 
 </body>
 </html>

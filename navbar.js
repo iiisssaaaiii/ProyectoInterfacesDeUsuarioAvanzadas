@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const root = document.getElementById("navbar-root");
     if (!root) return;
 
-    const navbarPath = window.NAVBAR_PATH || "navbar.html";
+    const navbarPath = window.NAVBAR_PATH || "../navbar.html";
 
     fetch(navbarPath)
         .then(res => res.text())
